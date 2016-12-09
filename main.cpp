@@ -3,30 +3,21 @@
 #include "corresponder.h"
 #include "ccl.h"
 #include "boundingboxescreator.h"
+#include "matcher.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
+    vector<Matcher::sceneCorners> sceneObjects;
 
-    Corresponder c;
-
-    CCL ccl;
-    BoundingBoxesCreator boundingBoxesCreator;
-
-    Mat image = imread("Images/Image10.png");
+    Mat image = imread("Images/Object.jpg");
+    Mat scene = imread("Images/Scene2.jpg");
 
     imshow("Image", image);
-
-    ccl.applyCCL(image);
-    boundingBoxesCreator.createBoundingBoxes(ccl.getLabels(), ccl.getNumberOfLabels(), image);
-
-    vector<Mat> objects = boundingBoxesCreator.getObjects();
-
-    for (int i = 0; i < (int)objects.size(); ++i) {
-        imshow(to_string(i), objects[i]);
-    }
+    Matcher match(image,scene);   //gets objects from the objects image
+    sceneObjects=match.getScene();
 
     return a.exec();
 }
