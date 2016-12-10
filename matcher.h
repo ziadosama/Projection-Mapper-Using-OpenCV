@@ -8,19 +8,19 @@
 class Matcher
 {
 public:
-    struct sceneCorners
-    {
-        Point2f point1,point2,point3,point4;
-    };
-    Matcher(const Mat&, Mat&);
-    vector<sceneCorners> getScene();
+
+    Matcher(const Mat&,const Mat&);
+    vector<BoundingBox> getScene();
+    vector<BoundingBox> getObject();
 
 private:
+
     BoundingBoxesCreator boundingBoxesCreator;
     CCL ccl;
-    vector<sceneCorners> getScenes; //draws rectangles around objects in scenes
+    vector<BoundingBox> getobjects; //draws rectangles around objects in objects image
+    vector<BoundingBox> getScenes; //draws rectangles around objects in scenes
     vector<Mat> objects;
-    void surfBoard(Mat&);   //Surf and matching objects
+    void surfBoard(const Mat&);   //Surf and matching objects
     Mat binary; // a temporary Mat for getting objects
 };
 

@@ -7,19 +7,20 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/nonfree/nonfree.hpp"
 
-Matcher::Matcher(const Mat &image, Mat & refImage)
+Matcher::Matcher(const Mat &image, const Mat & refImage)
 {
     image.copyTo(binary);
     ccl.applyCCL(binary);
     boundingBoxesCreator.createBoundingBoxes(ccl.getLabels(), ccl.getNumberOfLabels(), binary);
     objects = boundingBoxesCreator.getObjects();
+    getobjects =boundingBoxesCreator.getBoundingBoxes();
     surfBoard(refImage);
 }
 
-void Matcher::surfBoard(Mat &refImage)
-{
-    for (int i = 0; i < objects.size(); i++)
-    {
+void Matcher::surfBoard(const Mat &refImage){
+
+    for (int i = 0; i < objects.size(); i++){
+
         //-- Step 1: Detect the keypoints using SURF Detector
         int minHessian = 400;
 
@@ -47,8 +48,8 @@ void Matcher::surfBoard(Mat &refImage)
         double min_dist = 100;
 
         //-- Quick calculation of max and min distances between keypoints
-        for (int i = 0; i < descriptors_object.rows; i++)
-        {
+        for (int i = 0; i < descriptors_object.rows; i++){
+
             double dist = matches[i].distance;
             if (dist < min_dist)
                 min_dist = dist;
@@ -60,19 +61,15 @@ void Matcher::surfBoard(Mat &refImage)
         std::vector<DMatch> good_matches;
 
         for (int i = 0; i < descriptors_object.rows; i++)
-        {
             if (matches[i].distance < 3 * min_dist)
-            {
                 good_matches.push_back(matches[i]);
-            }
-        }
 
         //-- Localize the object
         std::vector<Point2f> obj;
         std::vector<Point2f> scene;
 
-        for (int i = 0; i < good_matches.size(); i++)
-        {
+        for (int i = 0; i < good_matches.size(); i++){
+
             //-- Get the keypoints from the good matches
             obj.push_back(keypoints_object[good_matches[i].queryIdx].pt);
             scene.push_back(keypoints_scene[good_matches[i].trainIdx].pt);
@@ -91,22 +88,17 @@ void Matcher::surfBoard(Mat &refImage)
 
         perspectiveTransform(obj_corners, scene_corners, H);
 
-        line(refImage,scene_corners[0],scene_corners[1],Scalar(0,255,0),4);
-        line(refImage,scene_corners[1],scene_corners[2],Scalar(0,255,0),4);
-        line(refImage,scene_corners[2],scene_corners[3],Scalar(0,255,0),4);
-        line(refImage,scene_corners[3],scene_corners[0],Scalar(0,255,0),4);
-        sceneCorners temp;
-        temp.point1=scene_corners[0];
-        temp.point2=scene_corners[1];
-        temp.point3=scene_corners[2];
-        temp.point4=scene_corners[3];
+        BoundingBox temp(scene_corners[0],scene_corners[1],scene_corners[2],scene_corners[3]);
         getScenes.push_back(temp);
-        //-- Show detected matches
-        imshow(to_string(i), refImage);
     }
 }
 
-vector<Matcher::sceneCorners> Matcher::getScene()
-{
+vector<BoundingBox> Matcher::getScene(){
+
     return getScenes;
+}
+
+vector<BoundingBox> Matcher::getObject(){
+
+    return getobjects;
 }

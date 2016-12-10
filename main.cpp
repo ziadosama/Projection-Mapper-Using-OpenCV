@@ -1,23 +1,18 @@
 #include "mainwindow.h"
 #include <QApplication>
-#include "corresponder.h"
-#include "ccl.h"
-#include "boundingboxescreator.h"
-#include "matcher.h"
+#include "renderer.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
-    vector<Matcher::sceneCorners> sceneObjects;
 
     Mat image = imread("Images/Object.jpg");
     Mat scene = imread("Images/Scene2.jpg");
-
+    //Mat texture = imread("Images/Texture.jpg");
     imshow("Image", image);
-    Matcher match(image,scene);   //gets objects from the objects image
-    sceneObjects=match.getScene();
+    //Renderer render(image,scene,texture);
 
     return a.exec();
 }
