@@ -78,7 +78,7 @@ void Matcher::surfBoard(const Mat &refImage){
         vector<Point2f> obj_corners(4);
         vector<Point2f> scene_corners(4);
 
-        if(obj.size()>4 && scene.size()>4 ){
+        if(obj.size()>3 && scene.size()>3 ){
 
             Mat H = findHomography(obj, scene, CV_RANSAC);
 
