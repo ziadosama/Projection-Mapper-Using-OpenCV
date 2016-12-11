@@ -75,21 +75,29 @@ void Matcher::surfBoard(const Mat &refImage){
             scene.push_back(keypoints_scene[good_matches[i].trainIdx].pt);
         }
 
-        Mat H = findHomography(obj, scene, CV_RANSAC);
+        vector<Point2f> obj_corners(4);
+        vector<Point2f> scene_corners(4);
 
-        //-- Get the corners from the image_1 ( the object to be "detected" )
-        std::vector<Point2f> obj_corners(4);
-        obj_corners[0] = cvPoint(0, 0);
-        obj_corners[1] = cvPoint(objects[i].cols, 0);
-        obj_corners[2] = cvPoint(objects[i].cols, objects[i].rows);
-        obj_corners[3] = cvPoint(0, objects[i].rows);
+        if(obj.size()>4 && scene.size()>4 ){
 
-        std::vector<Point2f> scene_corners(4);
+            Mat H = findHomography(obj, scene, CV_RANSAC);
 
-        perspectiveTransform(obj_corners, scene_corners, H);
+            //-- Get the corners from the image_1 ( the object to be "detected" )
+            obj_corners[0] = cvPoint(0, 0);
+            obj_corners[1] = cvPoint(objects[i].cols, 0);
+            obj_corners[2] = cvPoint(objects[i].cols, objects[i].rows);
+            obj_corners[3] = cvPoint(0, objects[i].rows);
 
-        BoundingBox temp(scene_corners[0],scene_corners[1],scene_corners[2],scene_corners[3]);
-        getScenes.push_back(temp);
+            perspectiveTransform(obj_corners, scene_corners, H);
+
+            BoundingBox temp(scene_corners[0],scene_corners[1],scene_corners[2],scene_corners[3]);
+            getScenes.push_back(temp);
+
+        }
+        else{
+            BoundingBox temp(Point(0,0),Point(0,0),Point(0,0),Point(0,0));
+            getScenes.push_back(temp);
+        }
     }
 }
 

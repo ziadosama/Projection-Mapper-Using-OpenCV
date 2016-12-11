@@ -8,11 +8,11 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    Mat image = imread("Images/Object.jpg");
-    Mat scene = imread("Images/Scene2.jpg");
-    //Mat texture = imread("Images/Texture.jpg");
+    Mat image = imread("Images/object.jpg");
+    Mat scene = imread("Images/scene.jpg");
+    Mat texture = imread("Images/texture.jpg");
     imshow("Image", image);
-    //Renderer render(image,scene,texture);
-
+    Renderer render(image,scene);
+    render.performRender(texture);
     return a.exec();
 }

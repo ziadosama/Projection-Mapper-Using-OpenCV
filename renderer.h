@@ -6,8 +6,8 @@
 class Renderer
 {
 public:
-    Renderer(const Mat&,const Mat&,const Mat&);
-    void performRender(const Mat&, const Mat&);
+    Renderer(const Mat&,const Mat&);
+    void performRender(const Mat&);
 
 private:
     vector<BoundingBox> getObjects; //draws rectangles around objects in objects image
