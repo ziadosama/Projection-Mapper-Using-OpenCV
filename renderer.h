@@ -12,7 +12,7 @@ public:
 private:
     vector<BoundingBox> getObjects; //draws rectangles around objects in objects image
     vector<BoundingBox> getScenes; //draws rectangles around objects in scenes
-    Mat drawScene;
+    Mat drawScene,refScene;
 };
 
 #endif // RENDERER_H

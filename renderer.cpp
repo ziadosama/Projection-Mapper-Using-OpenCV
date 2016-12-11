@@ -6,7 +6,7 @@ Renderer::Renderer(const Mat& image,const Mat& scene){
     getObjects=match.getObject();
     getScenes=match.getScene();
     scene.copyTo(drawScene);
-//    performRender(scene,texture);
+    scene.copyTo(refScene);
 }
 
 void Renderer::performRender(const Mat& texture){
@@ -52,6 +52,16 @@ void Renderer::performRender(const Mat& texture){
 
             }
     }
+    for(int i=0;i<drawScene.rows;i++)
+        for(int j=0;j<drawScene.cols;j++)
+        {
+            if( drawScene.at<Vec3b>(i,j)[0]==0 && drawScene.at<Vec3b>(i,j)[1]==0 &&drawScene.at<Vec3b>(i,j)[2]==0)
+            {
+                drawScene.at<Vec3b>(i,j)[0]=refScene.at<Vec3b>(i,j)[0];
+                drawScene.at<Vec3b>(i,j)[1]=refScene.at<Vec3b>(i,j)[1];
+                drawScene.at<Vec3b>(i,j)[2]=refScene.at<Vec3b>(i,j)[2];
+            }
+        }
     imshow("scene updated",drawScene);
     imwrite("Images/updaedScene.jpg",drawScene);
 }
